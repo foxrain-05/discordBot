@@ -1,13 +1,15 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
+const fs = require('fs');
 const { REST } = require("@discordjs/rest");
 const { Routes } = require('discord-api-types/v9');
 const { clientId, guildId, token } = require('./Config.json');
 
-const commands = [
-    new SlashCommandBuilder().setName('ping').setDescription('pong!'),
-    new SlashCommandBuilder().setName('서버').setDescription('서버의 이름 보내기')
-]
-    .map(command => command.toJSON());
+const commands = [];
+const commandFiles = fs.readdirSync("./commands").filter(file => file.endsWith('.js'));
+
+for (const file of commandFiles) {
+  const command = require(`./commands/${file}`);
+  commands.push(command.data.toJSON());
+}
 
 const rest = new REST({ version: '9'}).setToken(token);
 
