@@ -1,4 +1,4 @@
-const { Client, Intents, Interaction } = require(`discord.js`);
+const { Client, Intents } = require(`discord.js`);
 const { token } = require('./Config.json');
 
 const client = new Client({intents: [Intents.FLAGS.GUILDS]});
@@ -13,9 +13,9 @@ client.on('interactionCreate', async interaction => {
     const { commandName } = interaction;
 
     if (commandName == 'ping'){
-      await interaction.reply("hello world");
-    } else if(commandName == '경태'){
-      await interaction.reply('.');
+      await interaction.reply(`${client.ws.ping}ms`);
+    } else if(commandName == '서버'){
+      await interaction.reply(`${interaction.guild.name}`);
     }
 });
 
