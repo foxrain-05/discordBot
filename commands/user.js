@@ -5,6 +5,6 @@ module.exports = {
         .setName('사용자')
         .setDescription('사용자의 정보를 봅니다!'),
     async execute(interaction){
-        await interaction.reply(`사용자 태그: ${interaction.user.tag}\n사용자 id: ${interaction.user.id}`);
+        await interaction.reply(` 사용자 태그: ${interaction.user.tag}\n사용자 id: ${interaction.user.id}\n 사용자 프로필: ${interaction.user.displayAvatarURL()}`);
     },
 };
