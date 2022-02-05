@@ -1,7 +1,6 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { lolapikey } = require('../Config.json');
 var request = require('request');
-const user = require('./user');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -14,18 +13,32 @@ module.exports = {
 
     async execute(interaction){
 
+
         const summoner = interaction.options.getString('소환사명');
         const userUrl = `https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/${summoner}?api_key=${lolapikey}`;
         const encode_userUrl = encodeURI(userUrl);
-        console.log(encode_userUrl);
-        request(encode_userUrl)
-        .on("error", function(error){
-            console.log(error)
-        })
-        .on("response", function(response){
-            interaction.reply(String(response.statusCode));
-        })
-        .on("body", function(body){
+
+        request(encode_userUrl, function(error, response, body){
+            if(error){
+                console.log(error)
+            }
+            if(String(response.statusCode) != "200"){
+                interaction.reply(`${String(response.statusCode)} Error!`);
+            }
+            const user_json = JSON.parse(body);
+            const uId = user_json.id;
+            const gameUrl = `https://kr.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/${uId}?api_key=${lolapikey}`;
+            request(gameUrl, function(error, response, body){
+                if(error){
+                    console.log(error)
+                }
+                if(String(response.statusCode) != "200"){
+                    interaction.reply(`${String(response.statusCode)} Error!`);
+                }
+                const game_json = JSON.parse(body);
+
+
+            }) 
         })
     }
 }; 
