@@ -1,5 +1,6 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { lolapikey } = require('../Config.json');
+const championData = require('../championData.json');
 var request = require('request');
 
 module.exports = {
@@ -12,7 +13,6 @@ module.exports = {
             .setRequired(true)),
 
     async execute(interaction){
-
 
         const summoner = interaction.options.getString('소환사명');
         const userUrl = `https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/${summoner}?api_key=${lolapikey}`;
@@ -36,8 +36,9 @@ module.exports = {
                     interaction.reply(`${String(response.statusCode)} Error!`);
                 }
                 const game_json = JSON.parse(body);
-
-
+                const mainy_champion_id = game_json[0].championId;
+                interaction.reply(`소환사 이름: ${summoner}\n주 챔피언: ${championData[mainy_champion_id]}\n숙련도 점수: ${game_json[0].championPoints}`);
+                
             }) 
         })
     }
